@@ -2,8 +2,8 @@ name: Update Cal HR Status
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # Every 5 minutes
-  workflow_dispatch:       # Allows manual triggering too
+    - cron: '*/5 * * * *'  # every 5 minutes
+  workflow_dispatch:       # allow manual runs
 
 jobs:
   update-status:
@@ -21,14 +21,13 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run HR check script
+      - name: Run Cal Raleigh HR check script
         run: python cal_hr_tracker.py
 
-      - name: Upload files to GoDaddy (via FTP)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASS }}
-          local-dir: ./
-          server-dir: /public_html/   # Adjust if your GoDaddy root folder is different
+      - name: Commit updated status.json
+        run: |
+          git config user.name "cal-dinger-bot"
+          git config user.email "cal-dinger-bot@example.com"
+          git add status.json
+          git commit -m "Auto-update status.json [skip ci]" || echo "No changes to commit"
+          git push
