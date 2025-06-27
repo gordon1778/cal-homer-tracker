@@ -2,7 +2,7 @@ name: Update Cal HR Status
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # every 5 minutes
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -30,6 +33,7 @@ jobs:
         run: |
           git config --global user.email "cal-dinger-bot@example.com"
           git config --global user.name "cal-dinger-bot"
+          git checkout main
           git add status.json
           git commit -m "Auto-update status.json [skip ci]" || echo "No changes to commit"
           git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} HEAD:main
