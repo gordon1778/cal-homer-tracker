@@ -42,12 +42,27 @@
       border: none;
       border-radius: 12px;
     }
+
+    .details {
+      margin-top: 40px;
+      font-size: 1.5rem;
+    }
+
+    .countdown {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
   </style>
 </head>
 <body>
   <div class="content">
     <h1>Did Cal Raleigh Hit a Home Run Today?</h1>
     <div class="status" id="status">Loading...</div>
+
+    <div class="details">
+      Season Total: <span id="season-total">--</span> 💣
+      <div class="countdown" id="countdown" style="display: none;"></div>
+    </div>
 
     <div class="gif" id="gif" style="display: none;">
       <img src="https://media.giphy.com/media/Lp71IzWBaXWMEoO6Jj/giphy.gif" alt="Cal Celebration" width="400">
@@ -59,6 +74,31 @@
   </div>
 
   <script>
+    function startCountdown(gameTimeUTC) {
+      const countdownEl = document.getElementById('countdown');
+      const target = new Date(gameTimeUTC);
+      countdownEl.style.display = 'block';
+
+      function updateCountdown() {
+        const now = new Date();
+        const diff = target - now;
+
+        if (diff <= 0) {
+          countdownEl.textContent = 'Game has started!';
+          return;
+        }
+
+        const hrs = Math.floor(diff / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        countdownEl.textContent = `Game starts in ${hrs}h ${mins}m ${secs}s`;
+        requestAnimationFrame(updateCountdown);
+      }
+
+      updateCountdown();
+    }
+
     fetch('status.json')
       .then(response => response.json())
       .then(data => {
@@ -66,8 +106,14 @@
         const gifDiv = document.getElementById('gif');
         const boxscoreDiv = document.getElementById('boxscore');
         const boxscoreFrame = document.getElementById('boxscore-frame');
+        const seasonTotalSpan = document.getElementById('season-total');
 
         statusDiv.textContent = data.status;
+        seasonTotalSpan.textContent = data.season_total || '--';
+
+        if (data.game_time_utc) {
+          startCountdown(data.game_time_utc);
+        }
 
         if (data.status.includes('YES')) {
           gifDiv.style.display = 'block';
