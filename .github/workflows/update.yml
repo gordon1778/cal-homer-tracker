@@ -33,7 +33,9 @@ jobs:
         run: |
           git config --global user.email "cal-dinger-bot@example.com"
           git config --global user.name "cal-dinger-bot"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
           git checkout main
           git add status.json
           git commit -m "Auto-update status.json [skip ci]" || echo "No changes to commit"
-          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} HEAD:main
+          git push origin main
+
