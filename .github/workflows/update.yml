@@ -1,46 +1,26 @@
-name: Update Cal HR Status
+name: Debug PAT and Git
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
-  update-status:
+  debug-pat-token:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+      - name: Print GitHub context
+        run: echo "Repo: ${{ github.repository }}"
 
-      - name: Install dependencies
-        run: pip install requests
-
-      - name: Run Cal HR script
-        run: python cal_hr_tracker.py
-
-      - name: Commit and push updated status.json
+      - name: Set and print Git remote with PAT
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           git config --global user.name "cal-dinger-bot"
           git config --global user.email "cal-dinger-bot@example.com"
-
-          # Set authenticated remote
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}
-
-          # Checkout and sync main
-          git fetch origin main
-          git checkout main
-          git pull origin main
-
-          # Commit and push changes
-          git add status.json
-          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Auto-update status.json [skip ci]"
-          git push origin main
+          git remote -v
+          echo "PAT Token present? -> ${GH_TOKEN:+yes}"
