@@ -23,6 +23,7 @@ data = response.json()
 games = data['stats'][0]['splits']
 
 hit_hr_today = False
+boxscore_url = ""
 
 # Check if there's a game today and if Cal hit a HR
 for game in games:
@@ -32,6 +33,12 @@ for game in games:
         hr = int(statline.get('homeRuns', 0))
         if hr > 0:
             hit_hr_today = True
+
+        # Try to extract the game ID and build box score URL
+        game_info = game.get('game')
+        if game_info and 'gamePk' in game_info:
+            game_id = game_info['gamePk']
+            boxscore_url = f"https://www.mlb.com/gameday/{game_id}"
         break
 
 # Prepare status file content
@@ -40,6 +47,10 @@ status_data = {
     "home_run": hit_hr_today,
     "status": "YES 💣🔥" if hit_hr_today else "Not yet."
 }
+
+# Add boxscore URL if available
+if boxscore_url:
+    status_data["boxscore"] = boxscore_url
 
 # Write to status.json
 with open(STATUS_FILE, 'w') as f:
