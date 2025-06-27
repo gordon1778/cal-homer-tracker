@@ -7,32 +7,80 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 100px;
-      background-color: #0c2340;   /* Mariners navy */
+      margin: 0;
+      padding: 0;
+      background-color: #0c2340;
       color: white;
+      text-align: center;
+      min-height: 100vh;
+      background-image: url('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTB4dmk2amx4dHdveTIza21rMmV4ZHozZDc5aXBmYjBtZDAydDQwdCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/tkXZauKiTSWgzFWCTx/giphy.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
+
+    .content {
+      padding-top: 100px;
+      background-color: rgba(0, 0, 0, 0.6);
+      min-height: 100vh;
+    }
+
     .status {
       font-size: 4rem;
       margin-top: 30px;
     }
+
+    .gif {
+      margin-top: 40px;
+    }
+
+    iframe {
+      margin-top: 40px;
+      width: 90%;
+      max-width: 900px;
+      height: 600px;
+      border: none;
+      border-radius: 12px;
+    }
   </style>
 </head>
 <body>
-  <h1>Did Cal Raleigh Hit a Home Run Today?</h1>
+  <div class="content">
+    <h1>Did Cal Raleigh Hit a Home Run Today?</h1>
+    <div class="status" id="status">Loading...</div>
 
-  <div class="status" id="status">Loading&hellip;</div>
+    <div class="gif" id="gif" style="display: none;">
+      <img src="https://media.giphy.com/media/Lp71IzWBaXWMEoO6Jj/giphy.gif" alt="Cal Celebration" width="400">
+    </div>
+
+    <div id="boxscore" style="display: none;">
+      <iframe id="boxscore-frame" src=""></iframe>
+    </div>
+  </div>
 
   <script>
-    // Fetch the latest status JSON produced by the GitHub Action
     fetch('status.json')
-      .then(res => res.json())
+      .then(response => response.json())
       .then(data => {
-        document.getElementById('status').textContent = data.status;
+        const statusDiv = document.getElementById('status');
+        const gifDiv = document.getElementById('gif');
+        const boxscoreDiv = document.getElementById('boxscore');
+        const boxscoreFrame = document.getElementById('boxscore-frame');
+
+        statusDiv.textContent = data.status;
+
+        if (data.status.includes('YES')) {
+          gifDiv.style.display = 'block';
+
+          if (data.boxscore) {
+            boxscoreDiv.style.display = 'block';
+            boxscoreFrame.src = data.boxscore;
+          }
+        }
       })
-      .catch(err => {
+      .catch(error => {
         document.getElementById('status').textContent = 'Error loading status';
-        console.error(err);
+        console.error(error);
       });
   </script>
 </body>
