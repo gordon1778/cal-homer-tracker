@@ -3,7 +3,7 @@ name: Update Cal HR Status
 on:
   schedule:
     - cron: '*/5 * * * *'  # every 5 minutes
-  workflow_dispatch:       # allow manual runs
+  workflow_dispatch:
 
 jobs:
   update-status:
@@ -21,17 +21,15 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run Cal Raleigh HR check script
+      - name: Run Cal HR script
         run: python cal_hr_tracker.py
 
-      - name: Commit updated status.json
+      - name: Commit and push updated status.json
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          git config user.name "cal-dinger-bot"
-          git config user.email "cal-dinger-bot@example.com"
-          git remote set-url origin https://x-access-token:${PAT_TOKEN}@github.com/${REPO}
+          git config --global user.email "cal-dinger-bot@example.com"
+          git config --global user.name "cal-dinger-bot"
           git add status.json
           git commit -m "Auto-update status.json [skip ci]" || echo "No changes to commit"
-          git push
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} HEAD:main
