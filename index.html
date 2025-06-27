@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Did Cal Raleigh Hit a Home Run Today?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 100px;
+      background-color: #0c2340;   /* Mariners navy */
+      color: white;
+    }
+    .status {
+      font-size: 4rem;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Did Cal Raleigh Hit a Home Run Today?</h1>
+
+  <div class="status" id="status">Loading&hellip;</div>
+
+  <script>
+    // Fetch the latest status JSON produced by the GitHub Action
+    fetch('status.json')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('status').textContent = data.status;
+      })
+      .catch(err => {
+        document.getElementById('status').textContent = 'Error loading status';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
