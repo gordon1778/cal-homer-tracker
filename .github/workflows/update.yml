@@ -23,4 +23,4 @@ jobs:
           git config --global user.email "cal-dinger-bot@example.com"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}
           git remote -v
-          echo "PAT Token present? -> ${GH_TOKEN:+yes}"
+          if [ -z "$GH_TOKEN" ]; then echo "PAT Token NOT set"; else echo "PAT Token present"; fi
