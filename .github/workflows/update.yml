@@ -3,7 +3,7 @@ name: Update Cal HR Status
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/15 * * * *'  # Every 15 minutes
 
 jobs:
   update-status:
@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install requests
+      - name: Install dependencies
         run: pip install requests
 
       - name: Run update script
@@ -31,6 +31,7 @@ jobs:
           git config --global user.name "cal-dinger-bot"
           git config --global user.email "cal-dinger-bot@example.com"
 
+          # 🔐 Force Git to use your personal token
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/gordon1778/cal-homer-tracker
 
           git add status.json
