@@ -109,7 +109,7 @@
         const seasonTotalSpan = document.getElementById('season-total');
 
         statusDiv.textContent = data.status;
-        seasonTotalSpan.textContent = data.season_total || '--';
+        seasonTotalSpan.textContent = typeof data.season_total === 'number' ? data.season_total : '--';
 
         if (data.game_time_utc) {
           startCountdown(data.game_time_utc);
@@ -117,11 +117,12 @@
 
         if (data.status.includes('YES')) {
           gifDiv.style.display = 'block';
+        }
 
-          if (data.boxscore) {
-            boxscoreDiv.style.display = 'block';
-            boxscoreFrame.src = data.boxscore;
-          }
+        // ✅ Always show box score if available
+        if (data.boxscore) {
+          boxscoreDiv.style.display = 'block';
+          boxscoreFrame.src = data.boxscore;
         }
       })
       .catch(error => {
