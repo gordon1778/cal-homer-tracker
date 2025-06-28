@@ -27,12 +27,20 @@ jobs:
       - name: Commit and push updated status.json
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
           git config --global user.name "cal-dinger-bot"
           git config --global user.email "cal-dinger-bot@example.com"
 
-          # Set token-authenticated remote explicitly
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
+          # DEBUG: Show the current Git remote URL
+          echo "Git remote BEFORE:" 
+          git remote -v
+
+          # Set remote using PAT
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}
+
+          echo "Git remote AFTER:"
+          git remote -v
 
           git fetch origin main
           git checkout main
@@ -40,4 +48,8 @@ jobs:
 
           git add status.json
           git diff --cached --quiet && echo "No changes to commit" || git commit -m "Auto-update status.json [skip ci]"
+
+          # DEBUG: Show what's staged
+          git status
+
           git push origin main
