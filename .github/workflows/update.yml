@@ -1,54 +1,40 @@
 name: Update Cal HR Status
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'  # Every 5 minutes
   workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'  # runs every 15 minutes
 
 jobs:
   update-status:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install requests
         run: pip install requests
 
-      - name: Run the Cal HR script
+      - name: Run update script
         run: python cal_hr_tracker.py
 
-      - name: Commit and push updated status.json
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+      - name: Configure Git and commit changes
         run: |
           git config --global user.name "cal-dinger-bot"
           git config --global user.email "cal-dinger-bot@example.com"
 
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/gordon1778/cal-homer-tracker
-
-          git fetch origin main
-          git checkout main
-          git pull origin main
-
           git add status.json
+          git diff --cached --quiet && echo "No changes to commit" || \
+          GIT_COMMITTER_NAME="cal-dinger-bot" GIT_COMMITTER_EMAIL="cal-dinger-bot@example.com" \
+          git commit --author="cal-dinger-bot <cal-dinger-bot@example.com>" -m "Auto-update status.json [skip ci]"
 
-          if ! git diff --cached --quiet; then
-            GIT_COMMITTER_NAME="cal-dinger-bot" GIT_COMMITTER_EMAIL="cal-dinger-bot@example.com" \
-            git commit --author="cal-dinger-bot <cal-dinger-bot@example.com>" -m "Auto-update status.json [skip ci]"
-          else
-            echo "No changes to commit"
-          fi
-
-          git push origin main
-
-          git add status.json
-          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Auto-update status.json [skip ci]"
-          git push origin main
-
+      - name: Push changes using token
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
