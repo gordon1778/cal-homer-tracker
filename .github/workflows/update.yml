@@ -3,7 +3,7 @@ name: Update Cal HR Status
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/15 * * * *'  # runs every 15 minutes
+    - cron: '*/15 * * * *'
 
 jobs:
   update-status:
@@ -24,17 +24,19 @@ jobs:
       - name: Run update script
         run: python cal_hr_tracker.py
 
-      - name: Commit files
+      - name: Commit and push updated status.json
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config --global user.name "cal-dinger-bot"
           git config --global user.email "cal-dinger-bot@example.com"
+
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/gordon1778/cal-homer-tracker
+
           git add status.json
+
           git diff --cached --quiet && echo "No changes to commit" || \
           GIT_COMMITTER_NAME="cal-dinger-bot" GIT_COMMITTER_EMAIL="cal-dinger-bot@example.com" \
           git commit --author="cal-dinger-bot <cal-dinger-bot@example.com>" -m "Auto-update status.json [skip ci]"
 
-      - name: Push changes using token
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.PAT_TOKEN }}
-          branch: main
+          git push origin main
