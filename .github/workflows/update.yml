@@ -1,15 +1,19 @@
-name: Run Cal HR Tracker
+name: Update Cal HR Status
 
 on:
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes
   workflow_dispatch:
 
 jobs:
-  test-cal-script:
+  update-status:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -19,5 +23,24 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run the Cal Raleigh HR script
+      - name: Run the Cal HR script
         run: python cal_hr_tracker.py
+
+      - name: Commit and push updated status.json
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          git config --global user.name "cal-dinger-bot"
+          git config --global user.email "cal-dinger-bot@example.com"
+
+          # Set remote using token
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}
+
+          # Pull the latest main and commit changes
+          git fetch origin main
+          git checkout main
+          git pull origin main
+          git add status.json
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Auto-update status.json [skip ci]"
+          git push origin main
