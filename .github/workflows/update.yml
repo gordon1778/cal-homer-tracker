@@ -24,11 +24,10 @@ jobs:
       - name: Run update script
         run: python cal_hr_tracker.py
 
-      - name: Configure Git and commit changes
+      - name: Commit files
         run: |
           git config --global user.name "cal-dinger-bot"
           git config --global user.email "cal-dinger-bot@example.com"
-
           git add status.json
           git diff --cached --quiet && echo "No changes to commit" || \
           GIT_COMMITTER_NAME="cal-dinger-bot" GIT_COMMITTER_EMAIL="cal-dinger-bot@example.com" \
@@ -38,3 +37,4 @@ jobs:
         uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
+          branch: main
