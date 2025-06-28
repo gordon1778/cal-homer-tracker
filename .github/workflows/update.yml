@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -29,18 +27,17 @@ jobs:
       - name: Commit and push updated status.json
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-          REPO: ${{ github.repository }}
         run: |
           git config --global user.name "cal-dinger-bot"
           git config --global user.email "cal-dinger-bot@example.com"
 
-          # Set remote using token
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}
+          # Set token-authenticated remote explicitly
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
 
-          # Pull the latest main and commit changes
           git fetch origin main
           git checkout main
           git pull origin main
+
           git add status.json
           git diff --cached --quiet && echo "No changes to commit" || git commit -m "Auto-update status.json [skip ci]"
           git push origin main
