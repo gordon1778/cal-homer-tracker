@@ -1,11 +1,23 @@
-name: Basic Workflow Test
+name: Run Cal HR Tracker
 
 on:
   workflow_dispatch:
 
 jobs:
-  test:
+  test-cal-script:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Echo hello
-        run: echo "Hello world"
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run the Cal Raleigh HR script
+        run: python cal_hr_tracker.py
