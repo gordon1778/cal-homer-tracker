@@ -39,7 +39,6 @@ jobs:
 
           git add status.json
 
-          # ✅ Explicitly commit using cal-dinger-bot identity
           if ! git diff --cached --quiet; then
             GIT_COMMITTER_NAME="cal-dinger-bot" GIT_COMMITTER_EMAIL="cal-dinger-bot@example.com" \
             git commit --author="cal-dinger-bot <cal-dinger-bot@example.com>" -m "Auto-update status.json [skip ci]"
@@ -48,7 +47,6 @@ jobs:
           fi
 
           git push origin main
-
 
           git add status.json
           git diff --cached --quiet && echo "No changes to commit" || git commit -m "Auto-update status.json [skip ci]"
