@@ -2,5 +2,7 @@
   "date": "2025-06-29",
   "home_run": false,
   "status": "Not yet.",
-  "season_total": 9
+  "season_total": 9,
+  "boxscore": "https://www.mlb.com/gameday/777302",
+  "game_time_utc": "2025-06-29T18:35:00Z"
 }
