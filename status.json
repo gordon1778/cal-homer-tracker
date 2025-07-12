@@ -2,5 +2,7 @@
   "date": "2025-07-12",
   "home_run": false,
   "status": "Not yet.",
-  "season_total": 12
+  "season_total": 12,
+  "boxscore": "https://www.mlb.com/gameday/777137",
+  "game_time_utc": "2025-07-12T23:35:00Z"
 }
