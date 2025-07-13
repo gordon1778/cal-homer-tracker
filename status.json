@@ -1,8 +1,8 @@
 {
   "date": "2025-07-13",
-  "home_run": false,
-  "status": "Not yet.",
-  "season_total": 12,
+  "home_run": true,
+  "status": "YES \ud83d\udca3\ud83d\udd25",
+  "season_total": 13,
   "boxscore": "https://www.mlb.com/gameday/777125",
   "game_time_utc": "2025-07-13T18:10:00Z"
 }
