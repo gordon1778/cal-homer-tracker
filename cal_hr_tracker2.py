@@ -12,7 +12,7 @@ GAME_TIME_UTC = ""     # Optional: Game time in UTC format like "2025-08-29T19:1
 
 # Status messages
 YES_MESSAGE = "YES 💣🔥"
-NO_MESSAGE = "Not yet."
+NO_MESSAGE = "Not yet..."
 
 # File to update
 STATUS_FILE = "status.json"
