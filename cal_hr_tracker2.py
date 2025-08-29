@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 # Configuration - EDIT THESE VALUES MANUALLY
 # ==========================================
-SEASON_TOTAL_HRS = 18  # Update this with Cal's current season total
+SEASON_TOTAL_HRS = 51  # Update this with Cal's current season total
 HIT_HR_TODAY = False   # Set to True if Cal hit a HR today
 BOXSCORE_URL = ""      # Optional: Add MLB.com boxscore URL for today's game
 GAME_TIME_UTC = ""     # Optional: Game time in UTC format like "2025-08-29T19:10:00Z"
